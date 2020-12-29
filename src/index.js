@@ -4,9 +4,25 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
+import { Provider } from 'react-redux';
+import { combineReducers, createStore, applyMiddleware } from "redux";
+import thunk from 'redux-thunk';
+
+import userReducer from './redux/reducers/User';
+import imagesReducer from './redux/reducers/Images';
+
+const rootReducer = combineReducers({
+  user: userReducer,
+  images: imagesReducer
+});
+
+const store = createStore(rootReducer, applyMiddleware(thunk));
+
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <Provider store={store}>
+      <App />
+    </Provider>
   </React.StrictMode>,
   document.getElementById('root')
 );
