@@ -26,7 +26,20 @@ export const register = user => {
         .then((response) => response.json())
         .then((responseJson) => {
             console.log(responseJson);
-            dispatch(registerOrLoginSuccess(responseJson.user));
+            if(responseJson.user) {
+                dispatch(registerOrLoginSuccess(responseJson.user));
+            } else {
+                console.log(responseJson);
+                if(!responseJson) return;
+                const errorMessages = JSON.parse(responseJson);
+                if(errorMessages.name) {
+                    alert(errorMessages.name);
+                } else if(errorMessages.email) {
+                    alert(errorMessages.email);
+                } else if(errorMessages.password) {
+                    alert(errorMessages.password);
+                }
+            }
         })
         .catch(e => {
             console.log(e);

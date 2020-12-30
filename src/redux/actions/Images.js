@@ -1,13 +1,15 @@
-import { ApiUrl } from "../../constans/ApiUrl";
+import { ApiUrl, ApiUrlStorage } from "../../constans/ApiUrl";
 
 export const UPLOAD_IMAGE = 'UPLOAD_IMAGE';
 export const UPLOAD_IMAGE_SUCCESS = 'UPLOAD_IMAGE_SUCCESS';
 export const GET_IMAGES_OF_SPECIFIC_USER = 'GET_IMAGES_OF_SPECIFIC_USER';
 
-export const uploadImage = image => {
+export const uploadImage = (image, endpoint) => {
     return async (dispatch, getState) => {
         const { token } = getState().user;
-        
+        if(!endpoint) {
+            console.log("no endpoint - error");
+        }
         await fetch(image)
         .then(res => res.blob())
         .then(res => {
@@ -16,7 +18,7 @@ export const uploadImage = image => {
 
         let formData = new FormData();
         formData.append('image', image);
-        fetch(ApiUrl + 'images/upload', {
+        fetch(ApiUrl + endpoint, {
             method: 'POST',
             headers: {
                 'Authorization': 'Bearer ' + token, 
@@ -26,7 +28,12 @@ export const uploadImage = image => {
         .then((response) => response.json())
         .then((responseJson) => {
             console.log(responseJson);
-            dispatch(uploadImageSuccess(responseJson));
+            if(endpoint === "images/upload") {
+                dispatch(uploadImageSuccess(responseJson));
+            }
+            if(endpoint === "avatar/upload") {
+                document.getElementsByClassName("user-header__profile-image")[0].src=ApiUrlStorage + responseJson;
+            }
         })
         .catch(e => {
             console.log(e);
