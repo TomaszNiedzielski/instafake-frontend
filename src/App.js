@@ -22,7 +22,9 @@ import { SET_USER_DATA } from './redux/actions/User';
 
 // Restore user data
 let userData = localStorage.getItem('user');
-userData = JSON.parse(userData);
+if(userData) {
+    userData = JSON.parse(userData);
+}
 
 function App() {
     const dispatch = useDispatch();
